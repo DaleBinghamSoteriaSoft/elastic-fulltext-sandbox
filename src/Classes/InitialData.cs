@@ -71,6 +71,7 @@ namespace elastic.fulltext.sandbox.Classes
                                 vulnRecord.systemGroupId = systemGroupId;
                                 vulnRecord.systemKey = systemKey;
                                 vulnRecord.systemTitle = systemTitle;
+                                vulnRecord.internalIdString = new Guid().ToString();
                                 vulnRecord.artifactId = artifactId;
                                 vulnRecord.created = DateTime.Now;
                                 vulnRecord.createdBy = Guid.Parse("11111111-1111-1111-1111-111111111111");

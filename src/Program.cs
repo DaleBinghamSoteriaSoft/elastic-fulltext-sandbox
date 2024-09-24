@@ -24,7 +24,6 @@ class Program
         //     //.Authentication(new BasicAuthentication("dale.bingham@soteriasoft.com","1qaz2wsx#EDC$RFV"));
 
         var settings = new ElasticsearchClientSettings(new Uri("http://192.168.40.101:9200"))
-            //.CertificateFingerprint("<FINGERPRINT>")
             .Authentication(new BasicAuthentication(Environment.GetEnvironmentVariable("ELASTICUSER"), 
                 Environment.GetEnvironmentVariable("ELASTICPWD")));
 
@@ -50,8 +49,22 @@ class Program
         // }
         #endregion
 
+        // load sample data
         List<VulnerabilityReport> sampleData = Classes.InitialData.Load();
-
         // save the data into the ELK mapping correctly
+        var batchSize = 500;
+        var processed = 0;
+        var hasNextBatch = true;
+
+        while(hasNextBatch) 
+        {
+            var batch = sampleData.Skip(processed).Take(batchSize).ToList();
+            //var indexManyResponse = client.IndexManyAsync<VulnerabilityReport>(sampleData);
+            var asyncIndexResponse = client.BulkAsync(z => z.Index("openrmfpro-checklists").IndexMany(batch)).GetAwaiter().GetResult();
+            processed += batch.Count;
+            hasNextBatch = batch.Count == batchSize; // did it take them all and fill it up to 500
+        }
+        
+        Console.WriteLine("Check the ELK Stack for indexing on openrmfpro-checklist");
     }
 }
