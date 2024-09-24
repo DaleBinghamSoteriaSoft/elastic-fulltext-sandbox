@@ -1,0 +1,45 @@
+
+        // var response = client.SearchAsync<ElasticLog>(s => s.Index("logs-*")
+        //     .From(0).Size(100)).GetAwaiter().GetResult();
+
+        // if (response.IsValidResponse)
+        // {
+        //     List<ElasticLog> resultLogs = response.Documents.ToList();
+        //     Console.WriteLine("Results " + resultLogs.Count.ToString()  + " Documents");
+        // } 
+        // else {
+        //     Console.WriteLine("Invalid Response. " + response.DebugInformation);
+        // }
+
+        
+        // https://openrmf-dev-sandbox.es.us-east-1.aws.found.io/.alerts-security.alerts-default/_search?pretty
+        // IR-5
+        // var response = client.SearchAsync<ElasticLog>(s => s.Index(".alerts-security.alerts-default").Query(z => z.Bool(x => 
+        //     x.Filter(y => y.Range(z => z.DateRange(c => c
+        //         .Field(f => f.timestamp).Gte(DateTime.Now.AddDays(-30)).Lte(DateTime.Now))))))
+        //     .Aggregations(a => a
+        //         .Add("alertsByStatus", t => t.Terms( tt => tt
+        //             .Field( "kibana.alert.workflow_status"))
+        //             .Aggregations(aa => aa
+        //                 .Add("statusBySeverity", sa => sa.Terms( tt => tt
+        //                     .Field( "kibana.alert.severity"))
+        //                 )
+        //             )
+        //         )
+        //     )
+        // ).GetAwaiter().GetResult();
+        // //.From(0).Size(100)).GetAwaiter().GetResult();
+
+        // if (response.IsValidResponse)
+        // {
+        //     if (response.Aggregations != null && response.Aggregations.Values.Count() > 0) {
+        //         Elastic.Clients.Elasticsearch.Aggregations.StringTermsAggregate results = 
+        //             (Elastic.Clients.Elasticsearch.Aggregations.StringTermsAggregate)response.Aggregations["alertsByStatus"];
+        //         foreach(var item in results.Buckets) {
+        //             Console.WriteLine("Status: " + item.Key.Value + ". Count: " + item.DocCount.ToString());
+        //         }
+        //     }
+        // } 
+        // else {
+        //     Console.WriteLine("Invalid Response. " + response.DebugInformation);
+        // }
