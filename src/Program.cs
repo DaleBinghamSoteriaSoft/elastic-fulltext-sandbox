@@ -49,22 +49,36 @@ class Program
         // }
         #endregion
 
-        // load sample data
-        List<VulnerabilityReport> sampleData = Classes.InitialData.Load();
-        // save the data into the ELK mapping correctly
-        var batchSize = 500;
-        var processed = 0;
-        var hasNextBatch = true;
+        #region Load ELK Data
+        // // load sample data
+        // List<VulnerabilityReport> sampleData = Classes.InitialData.Load();
+        // // save the data into the ELK mapping correctly
+        // var batchSize = 500;
+        // var processed = 0;
+        // var hasNextBatch = true;
 
-        while(hasNextBatch) 
-        {
-            var batch = sampleData.Skip(processed).Take(batchSize).ToList();
-            //var indexManyResponse = client.IndexManyAsync<VulnerabilityReport>(sampleData);
-            var asyncIndexResponse = client.BulkAsync(z => z.Index("openrmfpro-checklists").IndexMany(batch)).GetAwaiter().GetResult();
-            processed += batch.Count;
-            hasNextBatch = batch.Count == batchSize; // did it take them all and fill it up to 500
-        }
+        // while(hasNextBatch) 
+        // {
+        //     var batch = sampleData.Skip(processed).Take(batchSize).ToList();
+        //     //var indexManyResponse = client.IndexManyAsync<VulnerabilityReport>(sampleData);
+        //     var asyncIndexResponse = client.BulkAsync(z => z.Index("openrmfpro-checklists").IndexMany(batch)).GetAwaiter().GetResult();
+        //     processed += batch.Count;
+        //     hasNextBatch = batch.Count == batchSize; // did it take them all and fill it up to 500
+        // }
         
-        Console.WriteLine("Check the ELK Stack for indexing on openrmfpro-checklist");
+        // Console.WriteLine("Check the ELK Stack for indexing on openrmfpro-checklist");
+        #endregion
+
+        #region Search ELK Data
+        string searchTerms = "windows AND firewall AND policy";
+        var response = client.SearchAsync<VulnerabilityReport>(s => s.Index("openrmfpro-checklists")
+            .Query(z => z.QueryString(x => x.Query(searchTerms)))
+            .From(0).Size(100)).GetAwaiter().GetResult();
+        // .Query(q => q.MatchAll(z => )));
+        if (response != null && response.IsValidResponse) {
+            Console.WriteLine("Hits: " + response.Hits.Count.ToString());
+        }
+        #endregion
+
     }
 }
